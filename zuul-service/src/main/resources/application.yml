@@ -1,0 +1,29 @@
+zuul:
+  prefix: /api
+  routes:    hello-server:
+      path: /server/**
+      service-id: HELLO-SERVER
+    hello-client:
+      path: /client/**
+      service-id: HELLO-CLIENT
+      
+eureka:  client:    service-url:      defaultZone: http://localhost:8070/eureka/
+      
+      
+      instance:
+        hostname: localhost
+        
+        
+server:  port: 8079
+
+spring:  application:    name: zuul-service
+    
+    
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+      
