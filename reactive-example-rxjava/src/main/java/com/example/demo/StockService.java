@@ -11,17 +11,19 @@ import yahoofinance.YahooFinance;
 
 public class StockService {
 
-	private static String[] quotes = {"AAPL","GOOG"};
+	private static String[] quotes = {"AAPL","GOOG","INTC", "BABA", "TSLA", "AIR.PA", "YHOO"};
 	public Observable<Stock> getStock() {
 		return Observable.create(subscriber ->{
 			if(!subscriber.isUnsubscribed())
 			{
 //				try {
-					Arrays.stream(quotes).map(this::getStock)
+					Arrays.stream(quotes).map(stock -> getStock(stock,subscriber))
 					.filter(Objects::nonNull)
 					.forEach(stock->{
 						subscriber.onNext(stock);
 						sleep(2000);
+						subscriber.onError(new RuntimeException("Custom Runtime exception"));	
+						
 					});
 //					Stock stock = YahooFinance.get("GOOG");
 //					subscriber.onNext(stock);
@@ -43,12 +45,16 @@ public class StockService {
 		}
 	}
 
-	private Stock getStock(String quote) {
+	private Stock getStock(String quote, Subscriber<? super Stock> subscriber) {
 		System.out.println("Retrieving stock info for:"+quote);
 		try {
+			if(quote.equals("GOOG"))
+			{
+				throw new IOException("Custom Exception");
+			}
 			return YahooFinance.get(quote);
 		} catch (IOException e) {
-			e.printStackTrace();
+			subscriber.onError(e);
 		}
 		return null;
 	}
