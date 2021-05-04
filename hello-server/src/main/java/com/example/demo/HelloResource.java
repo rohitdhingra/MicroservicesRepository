@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -7,6 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/rest/hello/server")
 public class HelloResource {
+	
+	@Value("${server.port}")
+    private String portNumber;
+	
 	@GetMapping
 	public String hello()
 	{
@@ -17,7 +22,8 @@ public class HelloResource {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		return "Hello World!";
+		System.out.println("Got the Request on port number:"+portNumber);
+		return "Hello World!"+portNumber;
 	}
 
 }
